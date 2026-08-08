@@ -1,4 +1,10 @@
-{
+"icons": [
+  {
+    "src": "icon.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }
+]{
   "name": "My Site",
   "short_name": "MySite",
   "start_url": "index.html",
