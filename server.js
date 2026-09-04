@@ -10,6 +10,14 @@ app.use(express.static('public'));
 let sock;
 let pairingReady = false;
 
+const menuText = `*꧁💛✌︎KIUBY✌︎🧊꧂ MENU*
+
+*.menu* - Show this menu
+*.ping* - Check bot speed
+*.premium* - Premium info
+
+More commands coming soon.`;
+
 async function startBot() {
   const { state, saveCreds } = await useMultiFileAuthState('auth_info');
   sock = makeWASocket({ auth: state, printQRInTerminal: false });
@@ -32,9 +40,16 @@ async function startBot() {
     const msg = m.messages[0];
     if (!msg.message || msg.key.fromMe) return;
     const sender = msg.key.remoteJid;
-    const text = msg.message.conversation || '';
-    if (text.toLowerCase() === 'hi') {
+    const text = (msg.message.conversation || '').trim().toLowerCase();
+
+    if (text === 'hi') {
       await sock.sendMessage(sender, { text: 'Hello! Bot is online.' });
+    } else if (text === '.menu') {
+      await sock.sendMessage(sender, { text: menuText });
+    } else if (text === '.ping') {
+      await sock.sendMessage(sender, { text: 'Pong! Bot is fast.' });
+    } else if (text === '.premium') {
+      await sock.sendMessage(sender, { text: 'Contact the owner to get premium access.' });
     }
   });
 }
