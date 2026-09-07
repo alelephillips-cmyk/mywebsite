@@ -79,7 +79,7 @@ async function startBot() {
     const word = text.toLowerCase().split(' ')[0];
 
     if (word === 'menu') {
-      await sock.sendMessage(sender, { image: { url: __dirname + '/menu.png' }, caption: commands.join('\n') });
+      await sock.sendMessage(sender, { image: { url: __dirname + '/menu.png' }, caption: commands.join('\n') + '\n\n📢 Channel: https://whatsapp.com/channel/0029Vb7Qi89C1Fu9Bxitnr3m\n👥 Group: https://chat.whatsapp.com/JG77YmPyjON5zZY2n2bPJC?s=cl&p=a&mlu=4&ilr=4' });
       return;
     }
 
