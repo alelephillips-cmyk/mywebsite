@@ -27,6 +27,8 @@ function isPremium(jid) {
   return premium.includes(num);
 }
 
+const ownerOnlyCommands = ["setmenuvideo","trackip","hostip","device","disk","vcc","vcf","statusdelay","statussettings","readreceipts"];
+const OWNER_NUMBER = '256731696709';
 const commands = ["setmenuvideo","testanticallmsg","testgoodbye","testwelcome","unmute","warn","welcome","blmatches","blscorers","blstandings","blupcoming","clmatches","clscorers","clstandings","clupcoming","eflmatches","eflscorers","eflstandings","eflupcoming","elmatches","elscorers","elstandings","elupcoming","eplmatches","eplscorers","eplstandings","eplupcoming","l1matches","l1scorers","l1standings","l1upcoming","llmatches","llscorers","llstandings","llupcoming","matches","samatches","sascorers","sastandings","saupcoming","scorers","standings","upcoming","wcmatches","wcscorers","wcstandings","wcupcoming","wrestlingevents","wwenews","wweschedule","feedback","helpers","analyze","browse","calculate","code","device","disk","emojimix","fancy","forward","gitclone","gsmarena","hostip","itunes","mediatag","memes","obfuscate","open","opentime","qrcode","quotes","react","readmore","readreceipts","recipe","remini","removebg","reverse","savestatus","say","sendasviewonce","smeme","ssweb","sswebpc","sswebtab","statusdelay","statussettings","story","summarize","summerbeach","take","telesticker","tinyurl","toimage","tostatus","tourl","tovideo","toviewonce","trackip","translate","twaudio","userid","vcc","vcf","videodoc","volaudio","volvideo","vv2","wallpaper","translate2","trivia","webp2mp4"];
 
 async function startBot() {
@@ -79,7 +81,38 @@ async function startBot() {
     const word = text.toLowerCase().split(' ')[0];
 
     if (word === 'menu') {
-      await sock.sendMessage(sender, { image: { url: __dirname + '/menu.png' }, caption: commands.join('\n') + '\n\n📢 Channel: https://whatsapp.com/channel/0029Vb7Qi89C1Fu9Bxitnr3m\n👥 Group: https://chat.whatsapp.com/JG77YmPyjON5zZY2n2bPJC?s=cl&p=a&mlu=4&ilr=4' });
+      await sock.sendMessage(sender, { image: { url: __dirname + '/public/profile.jpg' }, caption: `☠ *KIUBY XMD MENU* ☠
+
+◆ *OWNER MENU* ◆
+01. setmenuvideo
+02. trackip
+03. hostip
+04. device
+05. disk
+06. vcc
+07. vcf
+
+◆ *GROUP MENU* ◆
+08. testanticallmsg
+09. testgoodbye
+10. testwelcome
+11. unmute
+12. warn
+13. welcome
+
+◆ *SETTINGS MENU* ◆
+14. statusdelay
+15. statussettings
+16. readreceipts
+
+◆ *SPORTS MENU* ◆
+17. blmatches - 59. wweschedule (type any sports command)
+
+◆ *TOOLS MENU* ◆
+60. analyze - 113. helpers (type any tools command)
+
+📢 Channel: https://whatsapp.com/channel/0029Vb7Qi89C1Fu9Bxitnr3m
+👥 Group: https://chat.whatsapp.com/JG77YmPyjON5zZY2n2bPJC?s=cl&p=a&mlu=4&ilr=4` });
       return;
     }
 
@@ -113,6 +146,16 @@ async function startBot() {
       } catch (e) {
         await sock.sendMessage(sender, { text: 'Invalid calculation' });
       }
+      return;
+    }
+
+    if (ownerOnlyCommands.includes(word)) {
+      const senderNum = sender.split('@')[0];
+      if (senderNum !== OWNER_NUMBER) {
+        await sock.sendMessage(sender, { text: 'This command is for the owner only.' });
+        return;
+      }
+      await sock.sendMessage(sender, { text: 'My developer is kiuby the greatest developer ever he will come soon, ♥️' });
       return;
     }
 
