@@ -23,9 +23,18 @@ hr { border-color: #222; margin: 20px 0; }
 <body>
 <img src="profile.jpg" class="profile"><br>
 <h1 class="brand">☠️ KIUBY XMD ☠️</h1>
-<audio autoplay loop>
+<audio id="bgsong" loop>
 <source src="pairsong.mp3" type="audio/mpeg">
 </audio>
+<script>
+const song = document.getElementById('bgsong');
+function tryPlay() {
+  song.play().catch(()=>{});
+}
+document.body.addEventListener('click', tryPlay, { once: true });
+document.body.addEventListener('touchstart', tryPlay, { once: true });
+window.addEventListener('load', tryPlay);
+</script>
 <p class="status" style="text-align:center">BOT STATUS : <b>ACTIVE ✓</b></p>
 <p class="status" style="text-align:center">SYSTEM : PAIRING MANAGER</p>
 <hr>
