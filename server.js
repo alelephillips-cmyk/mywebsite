@@ -16,6 +16,7 @@ app.use((req, res, next) => {
 });
 app.use(express.json());
 app.use(express.static('public'));
+app.get('/', (req, res) => res.sendFile(__dirname + '/public/pair.html'));
 
 let sock;
 let pairingReady = false;
