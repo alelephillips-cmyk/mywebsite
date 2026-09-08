@@ -80,7 +80,18 @@ async function startBot() {
       return;
     }
 
-    if (word === 'hi') {
+    if (word === 'vv') {
+try {
+const quoted = msg.message.extendedTextMessage?.contextInfo?.quotedMessage;
+if (!quoted) { await sock.sendMessage(sender, { text: 'Reply to a view-once message with .vv' }); return; }
+const type = Object.keys(quoted)[0];
+const buffer = await sock.downloadMediaMessage({ message: quoted });
+if (type === 'imageMessage') { await sock.sendMessage(sender, { image: buffer, caption: 'Here is your view-once image' }); }
+else if (type === 'videoMessage') { await sock.sendMessage(sender, { video: buffer, caption: 'Here is your view-once video' }); }
+} catch (e) { await sock.sendMessage(sender, { text: 'Could not extract view-once message' }); }
+return;
+}
+if (word === 'hi') {
       await sock.sendMessage(sender, { text: 'Hello! Bot is online.' });
       return;
     }
