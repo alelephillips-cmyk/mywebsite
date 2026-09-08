@@ -7,6 +7,7 @@ function isPremium(jid) {
 const num = jid.split('@')[0];
 return premium.includes(num);
 }
+const menuText = "☠ KIUBY XMD MENU ☠\n\n━━━ REACTIONS ━━━\n.hug .kiss .slap .pat .poke .bonk .bite .cuddle .wave .wink .smile .cry .blush .happy .dance .yeet .bully .handhold .highfive .lick .glomp .nom .kill .awoo .cringe .love .headpat .triggered\n\n━━━ FUN & MEMES ━━━\n.joke .quote .fact .catfact .dogfact .roast .insult .pickup .advice .compliment .rate .owo .uwu .mock .clap .lenny .tableflip .unflip .shrug .facepalm .disapprove .gg .f .chad .based .flex .dank .yolo .legend .dealwithit .notbad .oops\n\n━━━ GAMES ━━━\n.8ball .coinflip\n\n━━━ TOOLS ━━━\n.pp .vv .calculate .menu .hi\n\n━━━ OWNER ━━━\n.setmenuvideo .testanticallmsg .testgoodbye .testwelcome .unmute .warn .welcome .statusdelay .statussettings .readreceipts .device .disk .hostip .trackip .vcc .vcf\n\n📢 View Channel: https://whatsapp.com/channel/0029Vb7Qi89C1Fu9Bxitnr3m\n👥 Group: https://chat.whatsapp.com/JG77YmPyjON5zZY2n2bPJC?s=cl&p=a&mlu=4&ilr=4";
 const commands = ["setmenuvideo","testanticallmsg","testgoodbye","testwelcome","unmute","warn","welcome","statusdelay","statussettings","readreceipts","device","disk","hostip","trackip","vcc","vcf"];
 async function startBot() {
 const { state, saveCreds } = await useMultiFileAuthState('auth_info');
@@ -45,7 +46,7 @@ const sender = msg.key.remoteJid;
 const text = (msg.message.conversation || (msg.message.extendedTextMessage && msg.message.extendedTextMessage.text) || '').trim();
 const word = text.toLowerCase().split(' ')[0];
 if (word === 'menu') {
-await sock.sendMessage(sender, { image: { url: '/data/data/com.termux/files/home/botpanel/menu.png' }, caption: commands.join('\n') });
+await sock.sendMessage(sender, { image: { url: '/data/data/com.termux/files/home/botpanel/menu.png' }, caption: menuText });
 return;
 }
 if (word === 'pp') {
@@ -145,6 +146,5 @@ startBot();
 module.exports = {
 sendMessage: (jid, text) => sock ? sock.sendMessage(jid, { text }) : null
 };
-
 
 
