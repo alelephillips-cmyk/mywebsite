@@ -166,6 +166,28 @@ async function startBot() {
   });
 }
 
+app.use('/admin.html', (req, res, next) => {
+  const auth = { login: 'kiuby', password: 'Pips256..' };
+  const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
+  const [login, password] = Buffer.from(b64auth, 'base64').toString().split(':');
+  if (login === auth.login && password === auth.password) {
+    return next();
+  }
+  res.set('WWW-Authenticate', 'Basic realm="Admin Only"');
+  res.status(401).send('Admin authentication required.');
+});
+
+app.use('/admin-data', (req, res, next) => {
+  const auth = { login: 'kiuby', password: 'Pips256..' };
+  const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
+  const [login, password] = Buffer.from(b64auth, 'base64').toString().split(':');
+  if (login === auth.login && password === auth.password) {
+    return next();
+  }
+  res.set('WWW-Authenticate', 'Basic realm="Admin Only"');
+  res.status(401).send('Admin authentication required.');
+});
+
 app.get('/admin-data', (req, res) => {
   res.json({ owner: OWNER_NUMBER, premium: premium });
 });
@@ -186,6 +208,28 @@ app.post('/admin-data/remove', (req, res) => {
   premium = premium.filter(n => n !== clean);
   fs.writeFileSync('./premium.json', JSON.stringify(premium));
   res.json({ success: true, premium });
+});
+
+app.use('/admin.html', (req, res, next) => {
+  const auth = { login: 'kiuby', password: 'Pips256..' };
+  const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
+  const [login, password] = Buffer.from(b64auth, 'base64').toString().split(':');
+  if (login === auth.login && password === auth.password) {
+    return next();
+  }
+  res.set('WWW-Authenticate', 'Basic realm="Admin Only"');
+  res.status(401).send('Admin authentication required.');
+});
+
+app.use('/admin-data', (req, res, next) => {
+  const auth = { login: 'kiuby', password: 'Pips256..' };
+  const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
+  const [login, password] = Buffer.from(b64auth, 'base64').toString().split(':');
+  if (login === auth.login && password === auth.password) {
+    return next();
+  }
+  res.set('WWW-Authenticate', 'Basic realm="Admin Only"');
+  res.status(401).send('Admin authentication required.');
 });
 
 app.get('/admin-data', (req, res) => {
