@@ -5,6 +5,7 @@ const fs = require('fs');
 
 const app = express();
 app.use((req, res, next) => {
+  return next(); // TEMP: password disabled for PWA build
   if (req.path === '/manifest.json' || req.path === '/icon.png') return next();
   const auth = { login: 'kiuby', password: 'SILENT DEMONS' };
   const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
