@@ -166,6 +166,50 @@ async function startBot() {
   });
 }
 
+app.get('/admin-data', (req, res) => {
+  res.json({ owner: OWNER_NUMBER, premium: premium });
+});
+
+app.post('/admin-data/add', (req, res) => {
+  const { number } = req.body;
+  const clean = (number || '').replace(/[^0-9]/g, '');
+  if (clean && !premium.includes(clean)) {
+    premium.push(clean);
+    fs.writeFileSync('./premium.json', JSON.stringify(premium));
+  }
+  res.json({ success: true, premium });
+});
+
+app.post('/admin-data/remove', (req, res) => {
+  const { number } = req.body;
+  const clean = (number || '').replace(/[^0-9]/g, '');
+  premium = premium.filter(n => n !== clean);
+  fs.writeFileSync('./premium.json', JSON.stringify(premium));
+  res.json({ success: true, premium });
+});
+
+app.get('/admin-data', (req, res) => {
+  res.json({ owner: OWNER_NUMBER, premium: premium });
+});
+
+app.post('/admin-data/add', (req, res) => {
+  const { number } = req.body;
+  const clean = (number || '').replace(/[^0-9]/g, '');
+  if (clean && premium.indexOf(clean) === -1) {
+    premium.push(clean);
+    fs.writeFileSync('./premium.json', JSON.stringify(premium));
+  }
+  res.json({ success: true, premium: premium });
+});
+
+app.post('/admin-data/remove', (req, res) => {
+  const { number } = req.body;
+  const clean = (number || '').replace(/[^0-9]/g, '');
+  premium = premium.filter(function(n){ return n !== clean; });
+  fs.writeFileSync('./premium.json', JSON.stringify(premium));
+  res.json({ success: true, premium: premium });
+});
+
 app.post('/pair', async (req, res) => {
   const { number } = req.body;
   if (!number) return res.status(400).json({ error: 'Number required' });
