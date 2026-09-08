@@ -5,19 +5,20 @@
 <style>
 body{background:#000;color:#0f0;font-family:monospace;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;margin:0}
 img{width:120px;height:120px;border-radius:50%;border:3px solid #0f0;margin-bottom:20px}
-input{background:#111;color:#0f0;border:2px solid #0f0;padding:10px;font-size:18px;text-align:center;letter-spacing:5px}
-button{margin-top:15px;padding:10px 30px;background:#0f0;color:#000;border:none;font-weight:bold}
+input{background:#111;color:#0f0;border:2px solid #0f0;padding:10px;font-size:18px;text-align:center;letter-spacing:2px;margin-bottom:10px;width:80%}
+button{margin-top:10px;padding:10px 30px;background:#0f0;color:#000;border:none;font-weight:bold}
 h1{text-shadow:0 0 10px #0f0}
 </style>
 </head>
 <body>
 <h1>SILENT DEMONS</h1>
 <img src="icon.png">
-<input type="password" id="pw" placeholder="ENTER PASSWORD">
+<input type="text" id="user" placeholder="USERNAME">
+<input type="password" id="pw" placeholder="PASSWORD">
 <button onclick="check()">ENTER</button>
 <script>
 function check(){
-if(document.getElementById('pw').value==="SILENT DEMONS"){
+if(document.getElementById('user').value==="admin" && document.getElementById('pw').value==="SILENT DEMONS"){
 window.location.href="app.html";
 }else{
 alert("ACCESS DENIED");
