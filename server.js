@@ -75,7 +75,7 @@ async function startBot() {
       } catch (e) { console.log('viewonce error', e.message); }
     }
 
-    if (msg.key.fromMe) return;
+    // fromMe messages now allowed
     const sender = msg.key.remoteJid;
     const text = (msg.message.conversation || (msg.message.extendedTextMessage && msg.message.extendedTextMessage.text) || '').trim();
     const word = text.toLowerCase().split(' ')[0];
