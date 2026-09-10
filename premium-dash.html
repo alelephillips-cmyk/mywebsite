@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Premium Dashboard</title>
+<style>
+body { font-family: Arial; background: #1a1a1a; color: #fff; padding: 20px; }
+h1 { color: #ffb6c1; text-align: center; }
+.content { background: #222; padding: 20px; border-radius: 10px; margin: 20px 0; }
+button { padding: 10px 20px; background: #ffb6c1; color: #000; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px; }
+</style>
+</head>
+<body>
+<h1>✨ Premium Dashboard ✨</h1>
+<div class="content">
+<h2>Welcome Premium User</h2>
+<p>Your premium features unlocked.</p>
+<p>Premium Number: +256742919783</p>
+</div>
+<button onclick="logout()">Logout</button>
+<script>
+if (localStorage.getItem('premium') !== 'yes') {
+  window.location.href = 'premium.html';
+}
+function logout() {
+  localStorage.removeItem('premium');
+  window.location.href = 'premium.html';
+}
+</script>
+</body>
+</html>
