@@ -81,6 +81,20 @@ function closeSocket(currentSock) {
   } catch (error) {}
 }
 
+function archiveLoggedOutAuthState() {
+  const authDir = process.env.AUTH_DIR || 'auth_info';
+  if (!fs.existsSync(authDir)) return true;
+  const archiveDir = `${authDir}.logged_out-${Date.now()}`;
+  try {
+    fs.renameSync(authDir, archiveDir);
+    console.log(`Archived logged-out WhatsApp auth state to ${archiveDir}`);
+    return true;
+  } catch (error) {
+    console.error('Could not archive logged-out WhatsApp auth state:', error.message);
+    return false;
+  }
+}
+
 function scheduleReconnect() {
   if (reconnectTimer || connectionStatus === 'logged_out') return;
   const oldSocket = sock;
@@ -304,7 +318,8 @@ async function startBot() {
     const currentSock = makeWASocket({
       auth: state,
       printQRInTerminal: false,
-      browser: ['KIUBY XMD', 'Chrome', '1.0.0'],
+      // Use a canonical platform identity for WhatsApp pairing-code validation.
+      browser: ['Mac OS', 'Chrome', '1.0.0'],
       markOnlineOnConnect: false,
       syncFullHistory: false,
       connectTimeoutMs: 60000,
@@ -337,8 +352,17 @@ async function startBot() {
         const code = disconnectCode(lastDisconnect?.error);
         connectionError = lastDisconnect?.error?.message || 'WhatsApp connection closed';
         if (code === DisconnectReason.loggedOut) {
-          connectionStatus = 'logged_out';
-          sock = null;
+          // A logged-out session cannot request a new pairing code. Preserve it
+          // as a backup, then restart with a fresh unregistered auth state.
+          const archived = archiveLoggedOutAuthState();
+          if (archived) {
+            authRegistered = false;
+            connectionStatus = 'reconnecting';
+            scheduleReconnect();
+          } else {
+            connectionStatus = 'logged_out';
+            sock = null;
+          }
         } else {
           connectionStatus = 'reconnecting';
           scheduleReconnect();
