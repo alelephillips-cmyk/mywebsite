@@ -32,9 +32,29 @@ let pairingRequestPromise = null;
 let socketGeneration = 0;
 let socketStartedAt = 0;
 const temporaryMailboxes = new Map();
+const pairingAttempts = new Map();
+const PAIRING_COOLDOWN_MS = 5 * 60 * 1000;
+const WHATSAPP_RATE_LIMIT_MESSAGE = 'WhatsApp is rate-limiting this number right now. Please wait at least 30-60 minutes before trying again.';
 
 function disconnectCode(error) {
   return error?.output?.statusCode || error?.data?.statusCode || error?.statusCode || null;
+}
+
+function isWhatsAppPairingFailure(error) {
+  if (connectionStatus === 'logged_out') return true;
+  const code = disconnectCode(error);
+  const whatsappDisconnectCodes = [
+    DisconnectReason.loggedOut,
+    DisconnectReason.connectionClosed,
+    DisconnectReason.connectionLost,
+    DisconnectReason.timedOut,
+    DisconnectReason.restartRequired,
+  ].filter(codeValue => codeValue !== undefined);
+  if (whatsappDisconnectCodes.includes(code)) return true;
+
+  const message = String(error?.message || '').toLowerCase();
+  if (message.includes('replacing closed whatsapp socket')) return false;
+  return /(connection closed|connection lost|timed out|logged out|rate.?limit|whatsapp)/i.test(message);
 }
 
 function delay(ms) {
@@ -886,12 +906,23 @@ app.post('/pair', async (req, res) => {
   if (authRegistered) {
     return res.status(409).json({ error: 'This bot already has a registered WhatsApp session. Use the existing device or reset the saved session before pairing again.' });
   }
+  const now = Date.now();
+  const lastAttempt = pairingAttempts.get(number);
+  if (lastAttempt && now - lastAttempt < PAIRING_COOLDOWN_MS) {
+    return res.status(429).json({
+      error: 'Please wait a few minutes before trying this number again — WhatsApp temporarily blocks repeated pairing attempts.',
+    });
+  }
   if (pairingRequestPromise) {
     return res.status(409).json({ error: 'A pairing request is already in progress. Wait for it to finish before trying again.' });
   }
+  pairingAttempts.set(number, now);
+  for (const [attemptedNumber, timestamp] of pairingAttempts) {
+    if (now - timestamp >= PAIRING_COOLDOWN_MS) pairingAttempts.delete(attemptedNumber);
+  }
   let lastError = null;
   pairingRequestPromise = (async () => {
-    for (let attempt = 0; attempt < 3; attempt += 1) {
+    for (let attempt = 0; attempt < 2; attempt += 1) {
       try {
         const activeSocket = await waitForPairingSocket(20000);
         const code = await activeSocket.requestPairingCode(number);
@@ -899,8 +930,8 @@ app.post('/pair', async (req, res) => {
       } catch (error) {
         lastError = error;
         connectionError = error.message || 'Pairing failed';
-        if (authRegistered) break;
-        if (attempt < 2) {
+        if (authRegistered || isWhatsAppPairingFailure(error)) break;
+        if (attempt < 1) {
           scheduleReconnect();
           await delay(1500);
         }
@@ -913,6 +944,9 @@ app.post('/pair', async (req, res) => {
     if (code) return res.json({ code, status: 'pairing_code_ready' });
   } finally {
     pairingRequestPromise = null;
+  }
+  if (isWhatsAppPairingFailure(lastError)) {
+    return res.status(429).json({ error: WHATSAPP_RATE_LIMIT_MESSAGE });
   }
   const isTemporary = !authRegistered && connectionStatus !== 'logged_out';
   return res.status(isTemporary ? 503 : 409).json({ error: isTemporary ? publicConnectionError() : (lastError?.message || publicConnectionError()) });
