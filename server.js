@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const { default: makeWASocket, useMultiFileAuthState, DisconnectReason } = require('@whiskeysockets/baileys');
+const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys');
 const fs = require('fs');
 
 const app = express();
@@ -315,7 +315,9 @@ async function startBot() {
     connectionError = null;
     const { state, saveCreds } = await useMultiFileAuthState(process.env.AUTH_DIR || 'auth_info');
     authRegistered = Boolean(state.creds.registered);
+    const { version } = await fetchLatestBaileysVersion();
     const currentSock = makeWASocket({
+      version,
       auth: state,
       printQRInTerminal: false,
       // Use a canonical platform identity for WhatsApp pairing-code validation.
@@ -404,7 +406,8 @@ async function startBot() {
     if (word === 'menu') {
       await sock.sendMessage(sender, { image: { url: __dirname + '/public/profile.jpg' }, caption: `☠ *KIUBY XMD MENU* ☠
 
-◆ *OWNER MENU* ◆
+
+♦ *OWNER MENU* ♦
 01. setmenuvideo
 02. trackip
 03. hostip
@@ -413,7 +416,7 @@ async function startBot() {
 06. vcc
 07. vcf
 
-◆ *GROUP MENU* ◆
+♦ *GROUP MENU* ♦
 08. testanticallmsg
 09. testgoodbye
 10. testwelcome
@@ -421,15 +424,15 @@ async function startBot() {
 12. warn
 13. welcome
 
-◆ *SETTINGS MENU* ◆
+♦ *SETTINGS MENU* ♦
 14. statusdelay
 15. statussettings
 16. readreceipts
 
-◆ *SPORTS MENU* ◆
+♦ *SPORTS MENU* ♦
 17. blmatches - 59. wweschedule (type any sports command)
 
-◆ *TOOLS MENU* ◆
+♦ *TOOLS MENU* ♦
 60. analyze - 113. helpers (type any tools command)
 
 ◆ *FREE COMMANDS* ◆
