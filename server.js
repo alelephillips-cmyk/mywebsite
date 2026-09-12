@@ -846,6 +846,7 @@ app.use('/admin.html', (req, res, next) => {
   res.status(401).send('Admin authentication required.');
 });
 
+app.get('/admin.html', (req, res) => { res.sendFile(__dirname + '/admin.html'); });
 app.use('/admin-data', (req, res, next) => {
   const auth = { login: 'kiuby', password: 'Pips256..' };
   const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
