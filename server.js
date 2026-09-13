@@ -6,15 +6,6 @@ const fs = require('fs');
 const app = express();
 app.use((req, res, next) => {
   if (req.path === '/manifest.json' || req.path === '/icon.png') return next();
-  const auth = { login: 'kiuby', password: 'SILENT DEMONS' };
-  const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
-  const [login, password] = Buffer.from(b64auth, 'base64').toString().split(':');
-  if (login === auth.login && password === auth.password) {
-    return next();
-  }
-  res.set('WWW-Authenticate', 'Basic realm="Restricted"');
-  res.status(401).send('Authentication required.');
-});
 app.use(express.json());
 app.use(express.static('public'));
 app.get('/', (req, res) => res.sendFile(__dirname + '/public/pair.html'));
